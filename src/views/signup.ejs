@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-4">User Management</h2>
+        
+        <!-- User Form -->
+        <form action="/users" method="POST" class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" name="name" placeholder="Name" class="p-2 border rounded">
+            <input type="email" name="email" placeholder="Email" class="p-2 border rounded">
+            <input type="password" name="password" placeholder="Password" class="p-2 border rounded">
+            <input type="text" name="phoneNo" placeholder="Phone Number" class="p-2 border rounded">
+            <select name="role" class="p-2 border rounded">
+                <option value="event_manager">Event Manager</option>
+                <option value="service_provider">Service Provider</option>
+                <!-- <option value="admin">Admin</option> -->
+            </select>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add User</button>
+        </form>
+        
+       
+    </div>
+</body>
+</html>

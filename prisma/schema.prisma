@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  phoneNo   String
+  role      Role
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  events   Event[]    @relation("ManagerEvents")
+  services Service[]
+  Feedback Feedback[]
+}
+
+model Event {
+  id        Int       @id @default(autoincrement())
+  name      String
+  date      DateTime
+  duration  Int
+  address   String
+  managerId Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  manager   User       @relation("ManagerEvents", fields: [managerId], references: [id])
+  bookings  Booking[]
+  feedbacks Feedback[]
+}
+
+model ServiceCategory {
+  id       Int       @id @default(autoincrement())
+  name     String
+  services Service[]
+}
+
+model Service {
+  id          Int       @id @default(autoincrement())
+  providerId  Int
+  categoryId  Int
+  description String
+  price       Decimal
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  provider User            @relation(fields: [providerId], references: [id])
+  category ServiceCategory @relation(fields: [categoryId], references: [id])
+  bookings Booking[]
+}
+
+model Booking {
+  id        Int           @id @default(autoincrement())
+  eventId   Int
+  serviceId Int
+  status    BookingStatus
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  deletedAt DateTime?
+
+  event    Event     @relation(fields: [eventId], references: [id])
+  service  Service   @relation(fields: [serviceId], references: [id])
+  payments Payment[]
+}
+
+model Payment {
+  id            Int           @id @default(autoincrement())
+  bookingId     Int
+  amount        Decimal
+  paymentMethod Int
+  status        PaymentStatus
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  userId    Int
+  rate      Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  event_manager
+  service_provider
+  admin
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+}
