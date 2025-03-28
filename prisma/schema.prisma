@@ -30,15 +30,15 @@ model User {
 }
 
 model Event {
-  id        Int       @id @default(autoincrement())
-  name      String
-  date      DateTime
-  duration  Int
-  address   String
-  managerId Int
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  id         Int       @id @default(autoincrement())
+  name       String
+  start_date DateTime
+  end_date   DateTime
+  address    String
+  managerId  Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
 
   manager   User       @relation("ManagerEvents", fields: [managerId], references: [id])
   bookings  Booking[]
@@ -56,7 +56,7 @@ model Service {
   providerId  Int
   categoryId  Int
   description String
-  price       Decimal
+  price       Decimal   @db.Decimal(10, 2)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -83,7 +83,7 @@ model Booking {
 model Payment {
   id            Int           @id @default(autoincrement())
   bookingId     Int
-  amount        Decimal
+  amount        Decimal       @db.Decimal(10, 2)
   paymentMethod Int
   status        PaymentStatus
   createdAt     DateTime      @default(now())
