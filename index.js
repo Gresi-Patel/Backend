@@ -8,6 +8,7 @@ import { eventManagerRouter } from './src/routes/eventManagerRouter.js';
 import { eventRouter } from './src/routes/eventRouter.js';
 import { serviceRouter } from './src/routes/serviceRouter.js';
 import { bookingRouter } from './src/routes/bookingRouter.js';
+import feedbackRouter from './src/routes/feedbackRouter.js';
 
 // import bodyParser from 'body-parser';
 
@@ -28,6 +29,7 @@ app.use('/event_manager', eventManagerRouter);
 app.use('/event', eventRouter);
 app.use('/service', serviceRouter)
 app.use('/booking', bookingRouter)
+app.use('/feedback', feedbackRouter)
 
 
 // serviceProviderRouter.get("/",()={});
@@ -43,3 +45,6 @@ app.listen(4000, () => {
 // http://localhost:4000/event/
 // http://localhost:4000/service/
 // http://localhost:4000/booking/
+// http://localhost:4000/feedback/
+
+

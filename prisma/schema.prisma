@@ -40,9 +40,8 @@ model Event {
   updatedAt  DateTime  @updatedAt
   deletedAt  DateTime?
 
-  manager   User       @relation("ManagerEvents", fields: [managerId], references: [id])
-  bookings  Booking[]
-  feedbacks Feedback[]
+  manager  User      @relation("ManagerEvents", fields: [managerId], references: [id])
+  bookings Booking[]
 }
 
 model ServiceCategory {
@@ -52,32 +51,35 @@ model ServiceCategory {
 }
 
 model Service {
-  id          Int       @id @default(autoincrement())
+  id          Int              @id @default(autoincrement())
+  name        String           @default("")
   providerId  Int
-  categoryId  Int
+  categoryId  Int?
   description String
-  price       Decimal   @db.Decimal(10, 2)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  price       Decimal          @db.Decimal(10, 2)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
   deletedAt   DateTime?
-
-  provider User            @relation(fields: [providerId], references: [id])
-  category ServiceCategory @relation(fields: [categoryId], references: [id])
-  bookings Booking[]
+  provider    User             @relation(fields: [providerId], references: [id])
+  category    ServiceCategory? @relation(fields: [categoryId], references: [id])
+  bookings    Booking[]
+  feedbacks   Feedback[]
 }
 
 model Booking {
-  id        Int           @id @default(autoincrement())
-  eventId   Int
-  serviceId Int
-  status    BookingStatus
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  deletedAt DateTime?
-
-  event    Event     @relation(fields: [eventId], references: [id])
-  service  Service   @relation(fields: [serviceId], references: [id])
-  payments Payment[]
+  id         Int           @id @default(autoincrement())
+  eventId    Int
+  serviceId  Int
+  status     BookingStatus @default(pending)
+  startTime  DateTime
+  endTime    DateTime
+  totalPrice Decimal       @db.Decimal(10, 2)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  deletedAt  DateTime?
+  event      Event         @relation(fields: [eventId], references: [id])
+  service    Service       @relation(fields: [serviceId], references: [id])
+  payments   Payment[]
 }
 
 model Payment {
@@ -88,21 +90,19 @@ model Payment {
   status        PaymentStatus
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-
-  booking Booking @relation(fields: [bookingId], references: [id])
+  booking       Booking       @relation(fields: [bookingId], references: [id])
 }
 
 model Feedback {
   id        Int      @id @default(autoincrement())
-  eventId   Int
+  serviceId Int
   userId    Int
   rate      Int
   comment   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  event Event @relation(fields: [eventId], references: [id])
-  user  User  @relation(fields: [userId], references: [id])
+  service   Service  @relation(fields: [serviceId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 enum Role {
@@ -113,7 +113,9 @@ enum Role {
 
 enum BookingStatus {
   pending
+  accepted
   confirmed
+  rejected
   cancelled
 }
 
