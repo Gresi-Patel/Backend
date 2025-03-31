@@ -9,10 +9,10 @@ const createBooking = async (req, res) => {
     try {
         const booking = await prisma.booking.create({
             data: {
-                eventId: eventId,
-                serviceId: serviceId,
-                startTime: startTime,
-                endTime: endTime,
+                eventId: parseInt(eventId, 10),
+                serviceId: parseInt(serviceId, 10),
+                startTime: new Date(startTime),
+                endTime: new Date(endTime),
                 totalPrice: totalPrice
             },
         });
@@ -25,25 +25,59 @@ const createBooking = async (req, res) => {
 
 
 const updateBookingStatus = async (req, res) => {
-    try {
-        // const booking = await prisma.booking.findMany({
-        //     where: {
-        //         status: 'pending',
-        //     },
-        // });
-        // res.json(booking);
+    const { id } = req.params;
+    const { status } = req.body;
+    if (!["pending", "accepted", "confirmed", "rejected", "cancelled"].includes(status)) {
+        return res.status(400).json({ error: "Invalid booking status" });
+    }
 
-        const { id, status } = req.body
-        const booking = await prisma.booking.update({
-            where: { id: id },
-            data: { status: status }
+    try {
+        const updatedBooking = await prisma.booking.update({
+            where: { id: parseInt(id) },
+            data: { status },
         });
-        res.json(booking);
+        console.log(updatedBooking)
+        if (!updatedBooking) {
+            return res.status(404).json({ error: "Booking not found" });
+        }
+        res.json(updatedBooking);
     } catch (error) {
-        console.error(error);
+        res.status(500).json({ error: "Error updating booking status" });
+    }
+};
+
+const getAllBookings = async (req, res) => {
+    try {
+        const bookings = await prisma.booking.findMany({
+            include: {
+                event: true,
+                service: true,
+                payments: true,
+            },
+        });
+        res.json(bookings);
+
+    }
+    catch (error) {
         res.status(500).json({ message: "Error fetching bookings" });
     }
 }
 
+const deleteBooking = async (req, res) => {
+    const { id } = req.params;
 
-export { createBooking, updateBookingStatus };
+    try {
+        await prisma.booking.update({
+            where: { id: parseInt(id) },
+            data: { deletedAt: new Date() },
+        });
+        res.json({ message: "Booking deleted successfully" });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Error deleting booking" });
+
+    }
+
+}
+
+export { createBooking, updateBookingStatus, getAllBookings, deleteBooking };

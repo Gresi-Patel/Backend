@@ -9,8 +9,10 @@ import { eventRouter } from './src/routes/eventRouter.js';
 import { serviceRouter } from './src/routes/serviceRouter.js';
 import { bookingRouter } from './src/routes/bookingRouter.js';
 import feedbackRouter from './src/routes/feedbackRouter.js';
+import adminRouter from './src/routes/adminRoutes.js';
 
 // import bodyParser from 'body-parser';
+
 
 const app = express();
 app.use(cors());
@@ -28,8 +30,10 @@ app.use('/service_provider', serviceProviderRouter);
 app.use('/event_manager', eventManagerRouter);
 app.use('/event', eventRouter);
 app.use('/service', serviceRouter)
-app.use('/booking', bookingRouter)
+app.use('/bookings', bookingRouter)
 app.use('/feedback', feedbackRouter)
+
+app.use('/admin',adminRouter)
 
 
 // serviceProviderRouter.get("/",()={});
