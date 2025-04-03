@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { sendApprovalEmail } from '../../utils/mailer.js';
 const prisma = new PrismaClient();
 
 // Get all users (except admin)
@@ -6,8 +7,7 @@ const getAllUsers = async (req, res) => {
     try {
         const users = await prisma.user.findMany({
             where: { role: { not: "admin" } },
-            // select: { id,name, email, phoneNo, role, createdAt },
-            select: { id: true, name: true, email: true, phoneNo: true, role: true, createdAt: true ,deletedAt:true },
+            select: { id: true, name: true, email: true, phoneNo: true, role: true,status:true, createdAt: true ,deletedAt:true },
 
         });
         console.log(users);
@@ -77,4 +77,73 @@ const getTotalStats = async (req, res) => {
 }
 
 
-export {getAllUsers,getAllServices,deleteUser,getTotalStats};
+//update status of service provider
+
+const approveServiceProvider  = async (req, res) => {
+    try {
+        const userId = parseInt(req.params.id);
+
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+    
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+    
+        if (user.role !== "service_provider") {
+            return res.status(400).json({ message: "Only service providers can be approved." });
+        }
+
+        if (user.status === "approved") {
+            return res.status(400).json({ message: "User is already approved." });
+        }
+    
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: { status: "approved" }
+        });
+    
+        // Send approval email
+
+        await sendApprovalEmail(updatedUser.email, updatedUser.name);
+        res.json({ message: "Service Provider approved successfully.", user: updatedUser });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error updating user", error: error.message });
+    }
+};
+
+
+const rejectServiceProvider= async (req, res) => {
+    try {
+        const userId = parseInt(req.params.id);
+
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+    
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+    
+        if (user.role !== "service_provider") {
+            return res.status(400).json({ message: "Only service providers can be rejected." });
+        }
+
+        
+        if (user.status === "rejected") {
+            return res.status(400).json({ message: "User is already rejected." });
+        }
+    
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: { status: "rejected" }
+        });
+    
+        // Send rejection email
+        await sendRejectionEmail(updatedUser.email, updatedUser.name);
+        res.json({ message: "Service Provider rejected successfully.", user: updatedUser });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error updating user", error: error.message });
+    }
+};
+
+export {getAllUsers,getAllServices,deleteUser,getTotalStats,approveServiceProvider,rejectServiceProvider};
