@@ -10,6 +10,9 @@ import { serviceRouter } from './src/routes/serviceRouter.js';
 import { bookingRouter } from './src/routes/bookingRouter.js';
 import feedbackRouter from './src/routes/feedbackRouter.js';
 import adminRouter from './src/routes/adminRoutes.js';
+import {  subCategoryRouter } from './src/routes/subCategoryRouter.js';
+import { serviceSubtypeRouter } from './src/routes/subTypeRouter.js';
+import serviceCategoryRouter from './src/routes/serviceCategoryRouter.js';
 
 // import bodyParser from 'body-parser';
 
@@ -32,14 +35,17 @@ app.use('/event', eventRouter);
 app.use('/service', serviceRouter)
 app.use('/bookings', bookingRouter)
 app.use('/feedback', feedbackRouter)
+app.use('/subcategory',subCategoryRouter)
+app.use('/subtype', serviceSubtypeRouter)
+app.use('/service-category', serviceCategoryRouter)
 
 app.use('/admin',adminRouter)
 
 
 // serviceProviderRouter.get("/",()={});
 
-app.listen(4000, () => {
-  console.log('Server is running on http://localhost:4000');
+app.listen(5000, () => {
+  console.log('Server is running on http://localhost:5000');
 });
 
 

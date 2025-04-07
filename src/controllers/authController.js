@@ -58,7 +58,7 @@ const loginController = async (req, res) => {
         }
 
         const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
-        res.json({ message: "Login successful", token,role:user.role });
+        res.json({ message: "Login successful", token,role:user.role,userId:user.id });
     }
     catch (error) {
         res.status(500).json({ error: error.message || "Internal Server Error" });

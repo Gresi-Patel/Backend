@@ -9,10 +9,11 @@ const createService = async (req, res) => {
                 providerId,
                 categoryId,
                 description,
-                price,
+                price: Number(price),
                 name
             }
         });
+        // console.log(service);
         res.json(service);
     }
     catch (error) {
@@ -23,8 +24,36 @@ const createService = async (req, res) => {
 // Get all services
 const getAllServices = async (req, res) => {
     try {
-        const services = await prisma.service.findMany({ where: { deletedAt: null } });
-        res.json(services);
+        let serviceProviderId = req.query.serviceProviderId;
+        if (serviceProviderId) {
+            const services = await prisma.service.findMany({
+                where: { providerId: serviceProviderId },
+
+                include: {
+                    category: true,
+                    subcategories: {
+                        include: {
+                            subtypes: true
+                        }
+                    },
+                    feedbacks: true,
+                    bookings: true
+                },
+            });
+            res.json(services);
+
+        }
+        else {
+            const services = await prisma.service.findMany({
+                include: {
+                    feedbacks: true,
+                    provider: true,
+                    category: true,
+                    bookings: true,
+                }
+            });
+            res.json(services);
+        }
 
     } catch (error) {
         res.status(500).json({ error: error.message || "Internal Server Error" });
@@ -34,13 +63,15 @@ const getAllServices = async (req, res) => {
 // Get a single service by ID
 const getServiceById = async (req, res) => {
     try {
-        const id = Number(req.params.id);
+        const id = req.params.id;
         const service = await prisma.service.findUnique({
-            where:
-                { id },
-                include: {
-                    feedbacks:true
-                }
+            where: { id },
+            include: {
+                feedbacks: true,
+                provider: true,
+                category: true,
+                bookings: true,
+            }
         });
         if (!service) return res.status(404).json({ message: "Service not found" });
         res.json(service);
@@ -49,10 +80,13 @@ const getServiceById = async (req, res) => {
     }
 };
 
+
+
+
 //delete services
 const deleteService = async (req, res) => {
     try {
-        const id = Number(req.params.id);
+        const id = req.params.id;
         if (!id) {
             return res.status(400).json({ error: "Invalid ID" });
         }
@@ -66,6 +100,8 @@ const deleteService = async (req, res) => {
         res.status(500).json({ error: error.message || "Internal Server Error" });
     }
 }
+
+
 
 
 export { createService, getAllServices, getServiceById, deleteService };

@@ -81,7 +81,7 @@ const getTotalStats = async (req, res) => {
 
 const approveServiceProvider  = async (req, res) => {
     try {
-        const userId = parseInt(req.params.id);
+        const userId = req.params.id;
 
         const user = await prisma.user.findUnique({ where: { id: userId } });
     
@@ -103,7 +103,6 @@ const approveServiceProvider  = async (req, res) => {
         });
     
         // Send approval email
-
         await sendApprovalEmail(updatedUser.email, updatedUser.name);
         res.json({ message: "Service Provider approved successfully.", user: updatedUser });
 
