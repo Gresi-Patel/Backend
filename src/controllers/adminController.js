@@ -38,7 +38,7 @@ const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const user = await prisma.user.findUnique({ where: { id: parseInt(id) } });
+        const user = await prisma.user.findUnique({ where: { id} });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -50,7 +50,7 @@ const deleteUser = async (req, res) => {
         }
 
         await prisma.user.update({
-            where: { id: parseInt(id) },
+            where: { id },
             data: { deletedAt: new Date() },
         });
         res.json({ message: "User deleted successfully" });
@@ -114,7 +114,7 @@ const approveServiceProvider  = async (req, res) => {
 
 const rejectServiceProvider= async (req, res) => {
     try {
-        const userId = parseInt(req.params.id);
+        const userId = req.params.id;
 
         const user = await prisma.user.findUnique({ where: { id: userId } });
     
@@ -166,6 +166,8 @@ const getAllBookings=async (req, res) => {
 const approveBooking = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log("Received booking ID for approval:", req.params.id);
+
         const booking = await prisma.booking.update({
             where: { id },
             data: { status: "approved" },
