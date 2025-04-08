@@ -145,4 +145,51 @@ const rejectServiceProvider= async (req, res) => {
     }
 };
 
-export {getAllUsers,getAllServices,deleteUser,getTotalStats,approveServiceProvider,rejectServiceProvider};
+// get all bookings
+const getAllBookings=async (req, res) => {
+    try {
+        const bookings = await prisma.booking.findMany({
+            include: {
+                event: true,
+                service: true,
+                payments: true,
+            },
+        });
+        console.log(bookings)
+        res.json(bookings);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching bookings", error: error.message });
+    }
+}
+
+//aprove bookings
+const approveBooking = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const booking = await prisma.booking.update({
+            where: { id },
+            data: { status: "approved" },
+        });
+        res.status(200).json(booking);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error approving booking", error: error.message });
+    }
+}
+
+//reject bookings
+const rejectBooking = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const booking = await prisma.booking.update({
+            where: { id },
+            data: { status: "rejected" },
+        });
+        res.status(200).json(booking);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error rejecting booking", error: error.message });
+    }
+}
+
+export {getAllUsers,getAllServices,deleteUser,getTotalStats,approveServiceProvider,rejectServiceProvider,getAllBookings,approveBooking,rejectBooking};

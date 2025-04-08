@@ -61,8 +61,9 @@ const getAllBookings = async (req, res) => {
                 payments: true,
             },
         });
-        res.json(bookings);
-
+        console.log(bookings)
+        // res.json(bookings);
+    
     }
     catch (error) {
         res.status(500).json({ message: "Error fetching bookings" });
