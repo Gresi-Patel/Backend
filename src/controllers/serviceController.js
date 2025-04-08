@@ -28,7 +28,6 @@ const getAllServices = async (req, res) => {
         if (serviceProviderId) {
             const services = await prisma.service.findMany({
                 where: { providerId: serviceProviderId },
-
                 include: {
                     category: true,
                     subcategories: {

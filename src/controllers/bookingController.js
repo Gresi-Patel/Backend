@@ -7,10 +7,16 @@ const createBooking = async (req, res) => {
 
     const { eventId, serviceId, startTime, endTime, totalPrice } = req.body
     try {
+
+        const event = await prisma.event.findUnique({ where: { id: eventId } });
+        if (!event) return res.status(404).json({ message: 'Event not found' });
+
+        const service = await prisma.service.findUnique({ where: { id: serviceId } });
+        if (!service) return res.status(404).json({ message: 'Service not found' });
         const booking = await prisma.booking.create({
             data: {
-                eventId: parseInt(eventId, 10),
-                serviceId: parseInt(serviceId, 10),
+                eventId: eventId,
+                serviceId: serviceId,
                 startTime: new Date(startTime),
                 endTime: new Date(endTime),
                 totalPrice: totalPrice
@@ -33,7 +39,7 @@ const updateBookingStatus = async (req, res) => {
 
     try {
         const updatedBooking = await prisma.booking.update({
-            where: { id: parseInt(id) },
+            where: { id },
             data: { status },
         });
         console.log(updatedBooking)
@@ -68,7 +74,7 @@ const deleteBooking = async (req, res) => {
 
     try {
         await prisma.booking.update({
-            where: { id: parseInt(id) },
+            where: { id },
             data: { deletedAt: new Date() },
         });
         res.json({ message: "Booking deleted successfully" });
