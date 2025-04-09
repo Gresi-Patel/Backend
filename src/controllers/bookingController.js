@@ -33,7 +33,7 @@ const createBooking = async (req, res) => {
 const updateBookingStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
-    if (!["pending", "accepted", "confirmed", "rejected", "cancelled"].includes(status)) {
+    if (!["pending", "accepted", "confirmed", "rejected", "cancelled","approved","completed"].includes(status)) {
         return res.status(400).json({ error: "Invalid booking status" });
     }
 
@@ -87,4 +87,53 @@ const deleteBooking = async (req, res) => {
 
 }
 
-export { createBooking, updateBookingStatus, getAllBookings, deleteBooking };
+//aprove bookings
+const acceptedBooking = async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log("Received booking ID for approval:", id);
+
+        // First: Check if booking exists
+        const existingBooking = await prisma.booking.findUnique({
+            where: { id },
+        });
+
+        if (!existingBooking) {
+            return res.status(404).json({ message: "Booking not found" });
+        }
+
+        const booking = await prisma.booking.update({
+            where: {id: id },
+            data: { status: "accepted" },
+        });
+        res.status(200).json(booking);
+    }
+    catch (error) {
+        console.error("Accepted error:", error); 
+        res.status(500).json({ message: "Error accepted booking", error: error.message });
+    }
+}
+
+//reject bookings
+const rejectBooking = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const booking = await prisma.booking.update({
+            where: { id:id },
+            data: { status: "rejected" },
+        });
+        res.status(200).json(booking);
+    }
+    catch (error) {
+        
+        res.status(500).json({ message: "Error rejecting booking", error: error.message });
+    }
+}
+
+
+
+
+
+
+
+export { createBooking, updateBookingStatus, getAllBookings, deleteBooking ,acceptedBooking,rejectBooking};
