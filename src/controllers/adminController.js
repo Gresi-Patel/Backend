@@ -166,15 +166,25 @@ const getAllBookings=async (req, res) => {
 const approveBooking = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log("Received booking ID for approval:", req.params.id);
+        console.log("Received booking ID for approval:", id);
+
+        // First: Check if booking exists
+        const existingBooking = await prisma.booking.findUnique({
+            where: { id },
+        });
+
+        if (!existingBooking) {
+            return res.status(404).json({ message: "Booking not found" });
+        }
 
         const booking = await prisma.booking.update({
             where: {id: id },
-            data: { status: "approved" },
+            data: { status: "accepted" },
         });
         res.status(200).json(booking);
     }
     catch (error) {
+        console.error("Approval error:", error); 
         res.status(500).json({ message: "Error approving booking", error: error.message });
     }
 }
@@ -190,6 +200,7 @@ const rejectBooking = async (req, res) => {
         res.status(200).json(booking);
     }
     catch (error) {
+        
         res.status(500).json({ message: "Error rejecting booking", error: error.message });
     }
 }
