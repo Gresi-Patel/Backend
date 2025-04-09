@@ -61,8 +61,8 @@ const getAllBookings = async (req, res) => {
                 payments: true,
             },
         });
-        console.log(bookings)
-        // res.json(bookings);
+        // console.log(bookings)
+        res.json(bookings);
     
     }
     catch (error) {
