@@ -179,7 +179,7 @@ const approveBooking = async (req, res) => {
 
         const booking = await prisma.booking.update({
             where: {id: id },
-            data: { status: "accepted" },
+            data: { status: "approved" },
         });
         res.status(200).json(booking);
     }

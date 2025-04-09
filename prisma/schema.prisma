@@ -135,6 +135,8 @@ enum BookingStatus {
   confirmed
   rejected
   cancelled
+  approved
+  completed
 }
 
 enum PaymentStatus {
