@@ -130,10 +130,37 @@ const rejectBooking = async (req, res) => {
     }
 }
 
+const confirmedBooking = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const booking = await prisma.booking.update({
+            where: { id:id },
+            data: { status: "confirmed" },
+        });
+        res.status(200).json(booking);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error confirming booking", error: error.message });
+    }
+}
+
+const cancelledBooking = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const booking = await prisma.booking.update({
+            where: { id:id },
+            data: { status: "cancelled" },
+        });
+        res.status(200).json(booking);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error cancelling booking", error: error.message });
+    }
+}
 
 
 
 
 
 
-export { createBooking, updateBookingStatus, getAllBookings, deleteBooking ,acceptedBooking,rejectBooking};
+export { createBooking, updateBookingStatus, getAllBookings, deleteBooking ,acceptedBooking,rejectBooking,confirmedBooking,cancelledBooking};
