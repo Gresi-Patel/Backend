@@ -13,6 +13,7 @@ import adminRouter from './src/routes/adminRoutes.js';
 import {  subCategoryRouter } from './src/routes/subCategoryRouter.js';
 import { serviceSubtypeRouter } from './src/routes/subTypeRouter.js';
 import serviceCategoryRouter from './src/routes/serviceCategoryRouter.js';
+import otpRouter from './src/routes/otpRoutes.js';
 
 // import bodyParser from 'body-parser';
 
@@ -38,6 +39,7 @@ app.use('/feedback', feedbackRouter)
 app.use('/subcategory',subCategoryRouter)
 app.use('/subtype', serviceSubtypeRouter)
 app.use('/service-category', serviceCategoryRouter)
+app.use('/otp-api', otpRouter)
 
 app.use('/admin',adminRouter)
 

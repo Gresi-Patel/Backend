@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// ✅ Function to send Approval Email
+// Function to send Approval Email
 const sendApprovalEmail = async (toEmail, userName) => {
     try {
         const mailOptions = {
@@ -30,6 +30,30 @@ const sendApprovalEmail = async (toEmail, userName) => {
         console.error("Error sending approval email:", error);
     }
 };
+
+// Send OTP Email
+const sendOtpEmail = async (toEmail, otp) => {
+    try {
+        const mailOptions = {
+            from: "twing@gmail.com",
+            to: toEmail,
+            subject: "Your OTP Code - One Place Event",
+            html: `
+                <h2>One Time Password (OTP)</h2>
+                <p>Your OTP is: <strong>${otp}</strong></p>
+                <p>This OTP will expire in 10 minutes.</p>
+                <p>If you did not request this, please ignore this email.</p>
+                <p>Best Regards,<br>One Place Event Team</p>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log(`OTP email sent to ${toEmail}`);
+    } catch (error) {
+        console.error("Error sending OTP email:", error);
+    }
+};
+
 
 // ✅ Function to send Rejection Email
 const sendRejectionEmail = async (toEmail, userName) => {
@@ -53,4 +77,4 @@ const sendRejectionEmail = async (toEmail, userName) => {
     }
 };
 
-export { sendApprovalEmail, sendRejectionEmail };
+export { sendApprovalEmail, sendRejectionEmail ,sendOtpEmail};

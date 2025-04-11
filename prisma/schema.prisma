@@ -123,6 +123,17 @@ model Feedback {
   user      User?    @relation(fields: [userId], references: [id])
 }
 
+model OTP {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  email       String
+  otp         String
+  status      OTPStatus  @default(pending) 
+  expire_at   DateTime
+  created_at  DateTime   @default(now())
+  verified_at DateTime?
+}
+
+
 enum Role {
   event_manager
   service_provider
@@ -150,3 +161,11 @@ enum Status {
   approved
   rejected
 }
+
+enum OTPStatus {
+  pending     // OTP generated, waiting for verification
+  verified    // OTP successfully verified
+  expired     // OTP expired
+  invalid     // incorrect or already used
+}
+
