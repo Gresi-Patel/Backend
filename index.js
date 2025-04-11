@@ -19,7 +19,16 @@ import otpRouter from './src/routes/otpRoutes.js';
 
 
 const app = express();
-app.use(cors());
+// app.use(cors());
+
+//  Correct CORS setup
+app.use(cors({
+  origin: ['http://localhost:5173'], // Add other domains if deployed
+  credentials: true,
+}));
+
+// Optional: handle preflight
+app.options('*', cors());
 app.use(express.json());
 
 
