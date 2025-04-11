@@ -10,7 +10,7 @@ import { serviceRouter } from './src/routes/serviceRouter.js';
 import { bookingRouter } from './src/routes/bookingRouter.js';
 import feedbackRouter from './src/routes/feedbackRouter.js';
 import adminRouter from './src/routes/adminRoutes.js';
-import {  subCategoryRouter } from './src/routes/subCategoryRouter.js';
+import { subCategoryRouter } from './src/routes/subCategoryRouter.js';
 import { serviceSubtypeRouter } from './src/routes/subTypeRouter.js';
 import serviceCategoryRouter from './src/routes/serviceCategoryRouter.js';
 import otpRouter from './src/routes/otpRoutes.js';
@@ -23,7 +23,7 @@ const app = express();
 
 //  Correct CORS setup
 app.use(cors({
-  origin: ['http://localhost:5173'], // Add other domains if deployed
+  origin: ['http://localhost:5173', 'http://localhost:3000'], 
   credentials: true,
 }));
 
@@ -45,12 +45,12 @@ app.use('/event', eventRouter);
 app.use('/service', serviceRouter)
 app.use('/bookings', bookingRouter)
 app.use('/feedback', feedbackRouter)
-app.use('/subcategory',subCategoryRouter)
+app.use('/subcategory', subCategoryRouter)
 app.use('/subtype', serviceSubtypeRouter)
 app.use('/service-category', serviceCategoryRouter)
 app.use('/otp-api', otpRouter)
 
-app.use('/admin',adminRouter)
+app.use('/admin', adminRouter)
 
 
 // serviceProviderRouter.get("/",()={});
