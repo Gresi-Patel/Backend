@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
+import { sendOtpEmail } from '../../utils/mailer';
 
 
 const generateOtp = () => crypto.randomInt(1000, 9999).toString();
