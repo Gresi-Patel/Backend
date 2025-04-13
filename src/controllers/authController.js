@@ -50,7 +50,7 @@ const loginController = async (req, res) => {
         }
 
         const isValid = await bcrypt.compare(password, user.password);
-        
+
         if (!isValid) return res.status(401).json({ message: "Invalid credentials" });
 
         if (user.role === 'service_provider' && user.status !== 'approved') {
@@ -58,7 +58,7 @@ const loginController = async (req, res) => {
         }
 
         const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
-        res.json({ message: "Login successful", token,role:user.role,userId:user.id });
+        res.json({ message: "Login successful", token, role: user.role, userId: user.id });
     }
     catch (error) {
         res.status(500).json({ error: error.message || "Internal Server Error" });
@@ -67,8 +67,16 @@ const loginController = async (req, res) => {
 }
 
 const getUsers = async (req, res) => {
+
+
+    const { id } = req.params;
     try {
-        const users = await prisma.user.findMany();
+        const users = await prisma.user.findUnique({
+            where: { id: id }
+        });
+        if (!users) {
+            return res.status(404).json({ error: "User not found" });
+        }
         res.json(users);
     } catch (error) {
         res.status(500).json({ error: error.message || "Internal Server Error" });

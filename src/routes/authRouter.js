@@ -8,6 +8,7 @@ const authRouter=express.Router();
 
 authRouter.post('/signup',signupController);
 authRouter.post("/login", loginController);
+authRouter.get('/:id',getUsers);
 
 // authRouter.get("/getUsers",getUsers);
 // authRouter.delete("/deleteUser/:id",deleteUser)

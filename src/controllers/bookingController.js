@@ -3,8 +3,6 @@ const prisma = new PrismaClient();
 
 
 const createBooking = async (req, res) => {
-    // const {name, email, phone, date, time, people, message} = req.body
-
     const { eventId, serviceId, startTime, endTime, totalPrice } = req.body
     try {
 
@@ -33,7 +31,7 @@ const createBooking = async (req, res) => {
 const updateBookingStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
-    if (!["pending", "accepted", "confirmed", "rejected", "cancelled","approved","completed"].includes(status)) {
+    if (!["pending", "accepted", "confirmed", "rejected", "cancelled", "approved", "completed"].includes(status)) {
         return res.status(400).json({ error: "Invalid booking status" });
     }
 
@@ -54,21 +52,39 @@ const updateBookingStatus = async (req, res) => {
 
 const getAllBookings = async (req, res) => {
     try {
+        const { status, eventId, serviceId, userId, userType } = req.query;
+        const query = {};
+
+        if (status) {
+            console.log("Status query parameter:", status);
+            const statusArray = status.split(',').map(s => s.trim());
+            query.status = { in: statusArray.filter(s => s), };
+        }
+        if (eventId) query.eventId = eventId;
+        if (serviceId) query.serviceId = serviceId;
+
+        if (userId && userType) {
+            if (userType === 'service_provider') {
+                query.service = { providerId: userId };
+            } else if (userType === 'event_manager') {
+                query.event = { managerId: userId };
+            }
+        }
+
         const bookings = await prisma.booking.findMany({
+            where: query,
             include: {
                 event: true,
                 service: true,
                 payments: true,
             },
         });
-        // console.log(bookings)
         res.json(bookings);
-    
-    }
-    catch (error) {
+    } catch (error) {
+        console.log(error);
         res.status(500).json({ message: "Error fetching bookings" });
     }
-}
+};
 
 const deleteBooking = async (req, res) => {
     const { id } = req.params;
@@ -87,80 +103,15 @@ const deleteBooking = async (req, res) => {
 
 }
 
-//aprove bookings
-const acceptedBooking = async (req, res) => {
-    try {
-        const { id } = req.params;
-        console.log("Received booking ID for approval:", id);
-
-        // First: Check if booking exists
-        const existingBooking = await prisma.booking.findUnique({
-            where: { id },
-        });
-
-        if (!existingBooking) {
-            return res.status(404).json({ message: "Booking not found" });
-        }
-
-        const booking = await prisma.booking.update({
-            where: {id: id },
-            data: { status: "accepted" },
-        });
-        res.status(200).json(booking);
-    }
-    catch (error) {
-        console.error("Accepted error:", error); 
-        res.status(500).json({ message: "Error accepted booking", error: error.message });
-    }
-}
-
-//reject bookings
-const rejectBooking = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const booking = await prisma.booking.update({
-            where: { id:id },
-            data: { status: "rejected" },
-        });
-        res.status(200).json(booking);
-    }
-    catch (error) {
-        
-        res.status(500).json({ message: "Error rejecting booking", error: error.message });
-    }
-}
-
-const confirmedBooking = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const booking = await prisma.booking.update({
-            where: { id:id },
-            data: { status: "confirmed" },
-        });
-        res.status(200).json(booking);
-    }
-    catch (error) {
-        res.status(500).json({ message: "Error confirming booking", error: error.message });
-    }
-}
-
-const cancelledBooking = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const booking = await prisma.booking.update({
-            where: { id:id },
-            data: { status: "cancelled" },
-        });
-        res.status(200).json(booking);
-    }
-    catch (error) {
-        res.status(500).json({ message: "Error cancelling booking", error: error.message });
-    }
-}
 
 
 
 
 
 
-export { createBooking, updateBookingStatus, getAllBookings, deleteBooking ,acceptedBooking,rejectBooking,confirmedBooking,cancelledBooking};
+
+
+
+
+
+export { createBooking, updateBookingStatus, getAllBookings, deleteBooking };
