@@ -16,7 +16,6 @@ const signupController = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Check if user is already exists or not
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
             return res.status(400).send("User already exists!");
@@ -26,7 +25,7 @@ const signupController = async (req, res) => {
             data: {
                 name, email, password: hashedPassword, phoneNo,
                 role,
-                status: role === 'service_provider' ? 'pending' : 'approved'     // Set status based on role 
+                status: role === 'service_provider' ? 'pending' : 'approved'     
             }
         });
 

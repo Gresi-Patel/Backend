@@ -101,14 +101,17 @@ model Booking {
 }
 
 model Payment {
-  id            String        @id @default(auto()) @map("_id") @db.ObjectId
-  bookingId     String        @db.ObjectId
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  bookingId     String   @db.ObjectId
   amount        Float
-  paymentMethod String
-  status        PaymentStatus
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  booking       Booking?      @relation(fields: [bookingId], references: [id])
+  method        String
+  status        String
+  transactionId String
+  currency      String
+  invoiceUrl    String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  booking       Booking? @relation(fields: [bookingId], references: [id])
 }
 
 model Feedback {
@@ -124,15 +127,14 @@ model Feedback {
 }
 
 model OTP {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   email       String
   otp         String
-  status      OTPStatus  @default(pending) 
+  status      OTPStatus @default(pending)
   expire_at   DateTime
-  created_at  DateTime   @default(now())
+  created_at  DateTime  @default(now())
   verified_at DateTime?
 }
-
 
 enum Role {
   event_manager
@@ -150,11 +152,11 @@ enum BookingStatus {
   completed
 }
 
-enum PaymentStatus {
-  pending
-  completed
-  failed
-}
+// enum PaymentStatus {
+//   pending
+//   completed
+//   failed
+// }
 
 enum Status {
   pending
@@ -163,9 +165,8 @@ enum Status {
 }
 
 enum OTPStatus {
-  pending     // OTP generated, waiting for verification
-  verified    // OTP successfully verified
-  expired     // OTP expired
-  invalid     // incorrect or already used
+  pending // OTP generated, waiting for verification
+  verified // OTP successfully verified
+  expired // OTP expired
+  invalid // incorrect or already used
 }
-

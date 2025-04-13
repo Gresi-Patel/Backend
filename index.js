@@ -14,6 +14,7 @@ import { subCategoryRouter } from './src/routes/subCategoryRouter.js';
 import { serviceSubtypeRouter } from './src/routes/subTypeRouter.js';
 import serviceCategoryRouter from './src/routes/serviceCategoryRouter.js';
 import otpRouter from './src/routes/otpRoutes.js';
+import paymentRouter from './src/routes/paymentRouter.js';
 
 // import bodyParser from 'body-parser';
 
@@ -49,6 +50,7 @@ app.use('/subcategory', subCategoryRouter)
 app.use('/subtype', serviceSubtypeRouter)
 app.use('/service-category', serviceCategoryRouter)
 app.use('/otp-api', otpRouter)
+app.use('/payment',paymentRouter)
 
 app.use('/admin', adminRouter)
 
