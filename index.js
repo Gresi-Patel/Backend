@@ -15,12 +15,19 @@ import { serviceSubtypeRouter } from './src/routes/subTypeRouter.js';
 import serviceCategoryRouter from './src/routes/serviceCategoryRouter.js';
 import otpRouter from './src/routes/otpRoutes.js';
 import paymentRouter from './src/routes/paymentRouter.js';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // import bodyParser from 'body-parser';
 
 
 const app = express();
 // app.use(cors());
+
+app.use('/invoices', express.static(path.join(__dirname, 'public/invoices')));
+
 
 //  Correct CORS setup
 app.use(cors({

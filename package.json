@@ -24,6 +24,7 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.10.0",
+    "pdfkit": "^0.17.0",
     "razorpay": "^2.9.6"
   },
   "devDependencies": {
