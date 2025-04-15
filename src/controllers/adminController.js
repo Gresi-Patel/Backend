@@ -217,7 +217,7 @@ const getStats = async (req, res) => {
     const bookingsCount = await prisma.booking.count(
       {
         where: {
-          status: "pending",
+          status: "completed",
         },
       }
     );
