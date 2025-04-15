@@ -1,5 +1,5 @@
 import express from 'express';
-import { approveBooking, approveServiceProvider, deleteUser, getAllBookings, getAllServices, getAllUsers, getTotalStats, rejectBooking, rejectServiceProvider} from '../controllers/adminController.js';
+import { approveBooking, approveServiceProvider, deleteUser, getAllBookings, getAllServices, getAllUsers, getBookingStatusSummary, getEventTrends, getRecentBookings, getStats, getTotalStats, rejectBooking, rejectServiceProvider} from '../controllers/adminController.js';
 import {authenticateToken, authorizeRole } from '../middlewares/authMiddleware.js';
 const adminRouter=express.Router();
 
@@ -12,6 +12,9 @@ adminRouter.get("/bookings",authenticateToken,authorizeRole("admin"),getAllBooki
 adminRouter.put("/approve-booking/:id",authenticateToken,authorizeRole("admin"),approveBooking);
 adminRouter.put("/reject-booking/:id",authenticateToken,authorizeRole("admin"),rejectBooking);
 
-adminRouter.get("/stats",getTotalStats)
+adminRouter.get("/stats",authenticateToken,authorizeRole("admin"),getStats);
+adminRouter.get("/event-trends",authenticateToken,authorizeRole("admin"),getEventTrends);
+adminRouter.get("/booking-status_summary",authenticateToken,authorizeRole("admin"),getBookingStatusSummary);
+adminRouter.get("/recent-bookings",authenticateToken,authorizeRole("admin"),getRecentBookings);
 
 export default adminRouter;

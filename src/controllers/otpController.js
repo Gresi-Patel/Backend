@@ -12,6 +12,7 @@ const generateOtp = () => crypto.randomInt(1000, 9999).toString();
 const sendOtp = async (req, res) => {
     try {
         const { email } = req.body;
+        console.log(email);
         if (!email) return res.status(400).json({ message: "Email is required" });
         const otp = generateOtp();
         const expire_at = new Date(Date.now() + 10 * 60 * 1000); // expires in 10 minutes
@@ -73,7 +74,9 @@ const verifyOtp = async (req, res) => {
             },
         });
 
-        res.json({ message: "OTP verified successfully" });
+     
+        res.json({ success: true, message: "OTP verified successfully" });
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error verifying OTP" });

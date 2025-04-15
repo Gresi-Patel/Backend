@@ -19,6 +19,18 @@ const createBooking = async (req, res) => {
                 endTime: new Date(endTime),
                 totalPrice: totalPrice
             },
+            include: {
+                event: {
+                    include: {
+                        manager: true, // this is the key
+                    },
+                },
+                service: {
+                    include: {
+                        provider: true, // this is the key
+                    },
+                },
+            },
         });
         res.json(booking);
     } catch (error) {
@@ -74,7 +86,11 @@ const getAllBookings = async (req, res) => {
         const bookings = await prisma.booking.findMany({
             where: query,
             include: {
-                event: true,
+                event: {
+                    include: {
+                        manager: true,
+                    },
+                },
                 service: true,
                 payments: true,
             },

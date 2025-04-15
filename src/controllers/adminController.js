@@ -205,4 +205,122 @@ const rejectBooking = async (req, res) => {
     }
 }
 
-export {getAllUsers,getAllServices,deleteUser,getTotalStats,approveServiceProvider,rejectServiceProvider,getAllBookings,approveBooking,rejectBooking};
+
+// GET /admin/stats
+const getStats = async (req, res) => {
+  try {
+    const eventsCount = await prisma.event.count();
+    const usersCount = await prisma.user.count({
+      where: { role: { not: "admin" } },
+    });
+    const servicesCount = await prisma.service.count();
+    const bookingsCount = await prisma.booking.count(
+      {
+        where: {
+          status: "pending",
+        },
+      }
+    );
+
+    res.json({
+      events: eventsCount,
+      users: usersCount,
+      services: servicesCount,
+      bookings: bookingsCount,
+    });
+  } catch (err) {
+    console.error("Stats error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// GET /admin/event-trends
+const getEventTrends = async (req, res) => {
+    try {
+      const result = await prisma.event.groupBy({
+        by: ['createdAt'],
+      });
+  
+      const monthlyCounts = {};
+  
+      result.forEach(item => {
+        const date = new Date(item.createdAt);
+        const month = date.toLocaleString('default', { month: 'short' });
+        monthlyCounts[month] = (monthlyCounts[month] || 0) + 1;
+      });
+  
+      const months = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      ];
+  
+      const final = months.map(month => ({
+        month,
+        events: monthlyCounts[month] || 0,
+      }));
+  
+      res.json(final);
+    } catch (error) {
+      console.error("Error fetching event trends:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  // GET /admin/booking-status-summary
+const getBookingStatusSummary = async (req, res) => {
+    try {
+      const result = await prisma.booking.groupBy({
+        by: ['status'],
+        _count: {
+          status: true,
+        },
+      });
+  
+      const formatted = result.map(item => ({
+        name: item.status,
+        value: item._count.status,
+      }));
+  
+      res.json(formatted);
+    } catch (error) {
+      console.error("Error fetching booking status summary:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  // GET /admin/recent-bookings
+const getRecentBookings = async (req, res) => {
+    try {
+      const bookings = await prisma.booking.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 5,
+        include: {
+          event: {
+            select: {
+              manager: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          service: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+  
+      res.json(bookings);
+    } catch (error) {
+      console.error("Error fetching recent bookings:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+  
+
+
+export {getAllUsers,getAllServices,deleteUser,getStats,getTotalStats,approveServiceProvider,rejectServiceProvider,getAllBookings,approveBooking,rejectBooking,getEventTrends,getBookingStatusSummary,getRecentBookings};

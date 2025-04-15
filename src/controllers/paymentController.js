@@ -34,7 +34,7 @@ export const storePaymentDetails = async (req, res) => {
         });
 
 
-        // ✅ Create invoice PDF path and generate PDF
+        // Create invoice PDF path and generate PDF
         const invoiceDir = path.join('public', 'invoices');
         fs.mkdirSync(invoiceDir, { recursive: true });
 
