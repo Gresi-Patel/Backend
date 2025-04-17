@@ -7,6 +7,7 @@ import PDFDocument from 'pdfkit';
 
 export const storePaymentDetails = async (req, res) => {
     const { transactionId, amount, bookingId } = req.body;
+    console.log('Received payment details:', req.body);
     if (!transactionId || !amount || !bookingId) {
         return res.status(400).json({ success: false, message: 'Missing required fields' });
       }
