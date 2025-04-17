@@ -18,7 +18,10 @@ const getEvent = async (req, res) => {
     try {
         let eventManagerId = req.query.eventManagerId;
         if (eventManagerId) {
-            const events = await prisma.event.findMany({ where: { managerId: eventManagerId } });
+            const events = await prisma.event.findMany({ 
+                where: { managerId: eventManagerId },
+                include: { manager: true }
+             });
             res.json(events);
         }
         else {
