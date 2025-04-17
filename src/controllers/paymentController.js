@@ -10,7 +10,7 @@ export const storePaymentDetails = async (req, res) => {
     console.log('Received payment details:', req.body);
     if (!transactionId || !amount || !bookingId) {
         return res.status(400).json({ success: false, message: 'Missing required fields' });
-      }
+    }
 
     try {
         const razorpayKeyId = process.env.RAZORPAY_KEY_ID;
@@ -19,7 +19,7 @@ export const storePaymentDetails = async (req, res) => {
 
         const razorpayResponse = await axios.post(
             `https://api.razorpay.com/v1/payments/${transactionId}/capture`,
-            
+
             { amount: amount * 100, currency: 'INR' },
             {
                 headers: {
@@ -42,7 +42,7 @@ export const storePaymentDetails = async (req, res) => {
 
         if (!bookingDetails) {
             return res.status(404).json({ success: false, message: 'Booking not found' });
-          }
+        }
 
 
         // Create invoice PDF path and generate PDF
@@ -131,7 +131,7 @@ export const storePaymentDetails = async (req, res) => {
             .text('Thank you for booking with OnePlaceEvent.', { align: 'center' })
             .text('We hope your event turns out amazing!', { align: 'center' });
 
-doc.end();
+        doc.end();
         stream.on('finish', async () => {
             //  Store payment including the pdfUrl
             const storedPayment = await prisma.payment.create({
