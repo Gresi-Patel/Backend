@@ -51,7 +51,11 @@ const getEventById = async (req, res) => {
                 bookings: {
                     include: {
                         service: true,
-                        event: true
+                        event:{
+                            include: {
+                                manager: true, 
+                            },
+                        }
                     }
                 }
             } // Corrected table names
