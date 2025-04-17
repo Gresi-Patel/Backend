@@ -18,10 +18,10 @@ const getEvent = async (req, res) => {
     try {
         let eventManagerId = req.query.eventManagerId;
         if (eventManagerId) {
-            const events = await prisma.event.findMany({ 
+            const events = await prisma.event.findMany({
                 where: { managerId: eventManagerId },
                 include: { manager: true }
-             });
+            });
             res.json(events);
         }
         else {
@@ -39,14 +39,22 @@ const getEvent = async (req, res) => {
 const getEventById = async (req, res) => {
     try {
         const eventId = req.params.id;
-        
+
         if (!eventId || typeof eventId !== "string") {
             return res.status(400).json({ message: "Invalid event ID" });
         }
 
         const event = await prisma.event.findUnique({
             where: { id: eventId },
-            include: { manager:true,bookings: true} // Corrected table names
+            include: {
+                manager: true, 
+                bookings: {
+                    include: {
+                        service: true,
+                        event: true
+                    }
+                }
+            } // Corrected table names
         });
 
         console.log("Fetched Event:", event);
@@ -55,7 +63,7 @@ const getEventById = async (req, res) => {
             return res.status(404).json({ message: "Event not found" });
         }
         res.json(event);
-        
+
     } catch (error) {
         console.error("Error fetching event:", error);
         res.status(500).json({ error: "Internal Server Error" });
@@ -83,4 +91,4 @@ const deleteEvent = async (req, res) => {
     }
 }
 
-export { createEvent, getEvent,deleteEvent,getEventById };
+export { createEvent, getEvent, deleteEvent, getEventById };
