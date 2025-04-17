@@ -16,6 +16,9 @@ import serviceCategoryRouter from './src/routes/serviceCategoryRouter.js';
 import otpRouter from './src/routes/otpRoutes.js';
 import paymentRouter from './src/routes/paymentRouter.js';
 import { fileURLToPath } from 'url';
+import dotenv from "dotenv";
+dotenv.config(); // Load environment variables from .env file
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
