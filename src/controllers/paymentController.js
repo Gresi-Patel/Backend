@@ -88,7 +88,7 @@ export const storePaymentDetails = async (req, res) => {
                 .fillColor('#333')
                 .text('Event Details', { underline: true });
 
-            const formattedDate = new Date(event.startDate).toLocaleDateString('en-GB');
+            const formattedDate = new Date(event.start_date).toLocaleDateString('en-GB');
             doc
                 .moveDown(0.3)
                 .fontSize(12)
