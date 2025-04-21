@@ -34,7 +34,7 @@ app.use('/invoices', express.static(path.join(__dirname, 'public/invoices')));
 
 //  Correct CORS setup
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'], 
+  origin: ['http://localhost:5173', 'http://localhost:3000', 'https://6805bf80c11323943a6198aa--oneplace-event.netlify.app/'], 
   credentials: true,
 }));
 
