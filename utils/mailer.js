@@ -19,7 +19,7 @@ const sendApprovalEmail = async (toEmail, userName) => {
                 <h2>Hello ${userName},</h2>
                 <p>Congratulations! Your service provider account has been approved.</p>
                 <p>You can now log in and manage your services.</p>
-                <p><a href="http://localhost:5173/login">Login Here</a></p>
+                <p><a href="https://oneplace-event.netlify.app/login">Login Here</a></p>
                 <p>Best Regards,<br>One Place Event Team</p>
             `
         };
